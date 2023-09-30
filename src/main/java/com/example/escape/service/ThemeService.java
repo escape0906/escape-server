@@ -1,5 +1,6 @@
 package com.example.escape.service;
 
+import com.example.escape.dto.ThemeDetailDto;
 import com.example.escape.dto.ThemeListItemDto;
 import com.example.escape.entity.Theme;
 import com.example.escape.repository.ThemeRepository;
@@ -19,6 +20,13 @@ public class ThemeService {
         return themePage.map(this::convert);
     }
 
+    public ThemeDetailDto findById(Long themeId) {
+        Theme theme = themeRepository.findById(themeId).orElseThrow(() -> new RuntimeException());
+        // TODO: 2023-09-30 Exception 재정의
+        ThemeDetailDto dto = new ThemeDetailDto();
+        return dto;
+    }
+
     private ThemeListItemDto convert(Theme theme) {
         ThemeListItemDto dto = new ThemeListItemDto();
         dto.setThumbnail(theme.getThumbnail());
@@ -26,5 +34,6 @@ public class ThemeService {
         dto.setLocation(theme.getAddress());
         return dto;
     }
+
 }
 
