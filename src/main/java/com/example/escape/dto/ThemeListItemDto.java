@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 public class ThemeListItemDto {
 
+    private Long id;
     private String thumbnail;
     private String title;
     private String location;
