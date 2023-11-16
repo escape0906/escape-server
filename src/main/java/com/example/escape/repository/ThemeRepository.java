@@ -9,4 +9,6 @@ public interface ThemeRepository extends JpaRepository<Theme, Long> {
 
     @Override
     Page<Theme> findAll(Pageable pageable);
+
+    Page<Theme> findAllByStore(String store, Pageable pageable);
 }

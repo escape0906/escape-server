@@ -21,6 +21,11 @@ public class ThemeService {
         return themePage.map(this::convert);
     }
 
+    public Page<ThemeListItemDto> findByStore(String store, Pageable pageable) {
+        Page<Theme> themePage = themeRepository.findAllByStore(store, pageable);
+        return themePage.map(this::convert);
+    }
+
     public ThemeDetailDto findById(Long themeId) {
         Theme theme = themeRepository.findById(themeId)
                 .orElseThrow(() -> new ThemeNotFoundException(themeId));
@@ -50,6 +55,5 @@ public class ThemeService {
         dto.setLocation(theme.getAddress());
         return dto;
     }
-
 }
 
