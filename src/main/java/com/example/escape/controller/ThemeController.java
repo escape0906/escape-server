@@ -2,6 +2,7 @@ package com.example.escape.controller;
 
 
 import com.example.escape.dto.ErrorBody;
+import com.example.escape.dto.SearchCondition;
 import com.example.escape.dto.ThemeDetailDto;
 import com.example.escape.dto.ThemeListItemDto;
 import com.example.escape.exception.ThemeNotFoundException;
@@ -25,13 +26,19 @@ public class ThemeController {
 
     @GetMapping
     public Page<ThemeListItemDto> findAll(
-            @RequestParam(value = "type",required = false) Type type,
-            @RequestParam(value = "store",required = false) String store,
+            @RequestParam(value = "type", required = false) Type type,
+            @RequestParam(value = "store", required = false) String store,
             Pageable pageable) {
         if (Type.STORE.equals(type))
             return themeService.findByStore(store, pageable);
 
         return themeService.findAll(pageable);
+    }
+
+    @GetMapping("/search")
+    public Page<ThemeListItemDto> searchTheme(SearchCondition condition, Pageable pageable) {
+        log.info(condition.toString());
+        return themeService.search(condition, pageable);
     }
 
     @GetMapping("/{themeId}")
