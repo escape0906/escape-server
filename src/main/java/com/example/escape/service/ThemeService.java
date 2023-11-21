@@ -1,15 +1,20 @@
 package com.example.escape.service;
 
+import com.example.escape.dto.SearchCondition;
 import com.example.escape.dto.ThemeDetailDto;
 import com.example.escape.dto.ThemeListItemDto;
 import com.example.escape.entity.Theme;
 import com.example.escape.exception.ThemeNotFoundException;
 import com.example.escape.repository.ThemeRepository;
+import com.example.escape.repository.spceification.ThemeSpecification;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class ThemeService {
@@ -31,6 +36,19 @@ public class ThemeService {
                 .orElseThrow(() -> new ThemeNotFoundException(themeId));
 
         return convertToDetailDto(theme);
+    }
+
+    public Page<ThemeListItemDto> search(SearchCondition condition, Pageable pageable) {
+        Specification<Theme> spec = Specification.where(ThemeSpecification.likeTitle(condition.getKeyword()));
+
+        if (condition.hasAddress()) {
+            spec = spec.and(ThemeSpecification.likeAddress(condition.getAddress()));
+        }
+        if (condition.hasDifficult()) {
+            spec = spec.and(ThemeSpecification.equalDifficult(condition.getDifficult()));
+        }
+
+        return themeRepository.findAll(spec, pageable).map(this::convert);
     }
 
     private ThemeDetailDto convertToDetailDto(Theme theme) {

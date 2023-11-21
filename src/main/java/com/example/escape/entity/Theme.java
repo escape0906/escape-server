@@ -15,6 +15,7 @@ public class Theme {
     private String title;
     private String thumbnail;
     private String genre;
+    private int difficult;
     private String store;
     private String address;
     private int playTime;
