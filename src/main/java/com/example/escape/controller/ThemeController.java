@@ -1,6 +1,7 @@
 package com.example.escape.controller;
 
 
+import com.example.escape.controller.doc.ThemeControllerSwagger;
 import com.example.escape.dto.ErrorBody;
 import com.example.escape.dto.SearchCondition;
 import com.example.escape.dto.ThemeDetailDto;
@@ -19,8 +20,8 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/themes")
-public class ThemeController {
+@RequestMapping("/themes")
+public class ThemeController implements ThemeControllerSwagger {
 
     private final ThemeService themeService;
 
@@ -46,6 +47,7 @@ public class ThemeController {
         return themeService.findById(themeId);
     }
 
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(ThemeNotFoundException.class)
     public ResponseEntity<ErrorBody> handleNotFound(Exception e) {
         log.error(e.getMessage());
