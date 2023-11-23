@@ -15,7 +15,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -37,7 +42,7 @@ public class ThemeController implements ThemeControllerSwagger {
     }
 
     @GetMapping("/search")
-    public Page<ThemeListItemDto> searchTheme(SearchCondition condition, Pageable pageable) {
+    public Page<ThemeListItemDto> searchTheme(@Valid SearchCondition condition, Pageable pageable) {
         log.info(condition.toString());
         return themeService.search(condition, pageable);
     }
@@ -51,6 +56,21 @@ public class ThemeController implements ThemeControllerSwagger {
     @ExceptionHandler(ThemeNotFoundException.class)
     public ResponseEntity<ErrorBody> handleNotFound(Exception e) {
         log.error(e.getMessage());
-        return new ResponseEntity<>(new ErrorBody("not found"), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(new ErrorBody(e.getMessage()), HttpStatus.NOT_FOUND);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(BindException.class)
+    public ResponseEntity<ErrorBody> handleBindException(BindException e) {
+        BeanPropertyBindingResult bindingResult = (BeanPropertyBindingResult) e.getBindingResult();
+        StringBuilder message = new StringBuilder();
+        for (FieldError error : bindingResult.getFieldErrors()) {
+            message.append(error.getField());
+            message.append(" ");
+            message.append(error.getDefaultMessage());
+        }
+        String msg = message.toString();
+        log.error(msg);
+        return new ResponseEntity<>(new ErrorBody(msg), HttpStatus.BAD_REQUEST);
     }
 }
