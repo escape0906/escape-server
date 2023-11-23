@@ -42,10 +42,21 @@ public class ThemeService {
         Specification<Theme> spec = Specification.where(ThemeSpecification.likeTitle(condition.getKeyword()));
 
         if (condition.hasAddress()) {
-            spec = spec.and(ThemeSpecification.likeAddress(condition.getAddress()));
+            String[] addresses = condition.getAddress();
+            Specification<Theme> addressCondition = Specification.where(ThemeSpecification.likeAddress(addresses[0]));
+            for (int i = 1; i < addresses.length; i++) {
+                addressCondition = addressCondition.or(ThemeSpecification.likeAddress(addresses[i]));
+            }
+            spec = spec.and(addressCondition);
         }
+
         if (condition.hasDifficult()) {
-            spec = spec.and(ThemeSpecification.equalDifficult(condition.getDifficult()));
+            Integer[] difficult = condition.getDifficult();
+            Specification<Theme> difficultCondition = Specification.where(ThemeSpecification.equalDifficult(difficult[0]));
+            for (int i = 1; i < difficult.length; i++) {
+                difficultCondition = difficultCondition.or(ThemeSpecification.equalDifficult(difficult[i]));
+            }
+            spec = spec.and(difficultCondition);
         }
 
         return themeRepository.findAll(spec, pageable).map(this::convert);
