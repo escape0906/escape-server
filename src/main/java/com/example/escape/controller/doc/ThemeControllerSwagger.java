@@ -26,9 +26,12 @@ public interface ThemeControllerSwagger {
     @Parameter(name = "sort", example = "id,asc")
     Page<ThemeListItemDto> findAll(Type type, String store, Pageable pageable);
 
-    @Operation(method = "GET", summary = "테마 검색", description = "파라미터로 page, size 등을 입력할 수 있습니다. ex) /api/themes?page=3&size=10\n page는 0부터 시작입니다." +
-            "\n정렬 시에는 파라미터로 sort를 입력할 수 있습니다. ex) /api/themes?sort=title,desc")
-    @ApiResponse(responseCode = "200")
+    @Operation(method = "GET", summary = "테마 검색", description = "파라미터로 page, size 등을 입력할 수 있습니다. ex) /api/themes/search?page=3&size=10\n page는 0부터 시작입니다." +
+            "\n정렬 시에는 파라미터로 sort를 입력할 수 있습니다. ex) /api/themes/search?sort=title,desc")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(responseCode = "400", description = "사용자 입력 오류")
+    })
     @Parameter(name = "type", description = "조회 기준", example = "title")
     @Parameter(name = "keyword", description = "검색 키워드 입력", example = "back")
     @Parameter(name = "difficult", description = "테마의 난이도", example = "3")
