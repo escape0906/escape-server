@@ -1,5 +1,6 @@
 package com.example.escape.service;
 
+import com.example.escape.dto.SearchCondition;
 import com.example.escape.dto.StoreListItemDto;
 import com.example.escape.entity.Store;
 import com.example.escape.repository.StoreRepository;
@@ -13,11 +14,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class StoreService {
 
-    // TODO: 2023-11-24 theme 테이블에서 store 정보 분리
     private final StoreRepository storeRepository;
 
     public Page<StoreListItemDto> findAll(Pageable pageable) {
         return storeRepository.findAll(pageable).map(this::convert);
+    }
+
+    public Page<StoreListItemDto> search(SearchCondition condition, Pageable pageable) {
+        return storeRepository.search(condition, pageable).map(this::convert);
     }
 
     private StoreListItemDto convert(Store store) {

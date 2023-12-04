@@ -24,9 +24,9 @@ public class StoreController implements StoreControllerSwagger {
         return storeService.findAll(pageable);
     }
 
-    //    @GetMapping("/search")
+    @GetMapping("/search")
     @Override
     public Page<StoreListItemDto> search(SearchCondition condition, Pageable pageable) {
-        return null;
+        return storeService.search(condition, pageable);
     }
 }
